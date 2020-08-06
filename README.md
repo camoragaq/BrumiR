@@ -3,7 +3,7 @@ alt="BrumiR" width="400" height="264" border="0" /></p>
 
 # BrumiR
 
-A de bruijn graph-based tool for miRNA discovery.
+A de Bruijn graph-based tool for miRNA discovery.
 
 ## Running Brumir
 
@@ -18,8 +18,8 @@ perl brumir.pl -a test/sRNA-seq.human.trim.fa.gz -p prefix
 | File  |  Description  |   
 |-------|---------------|
 | prefix.brumir.candidate_miRNA.fasta   |  fasta file with all the candidates with their KM and KC values respectively. |
-|  prefix.brumir.other_sequences.txt |  fasta file with all long sequences expressed in the sample, their are putative long non-coding RNA. |
-| prefix.brumir.RFAM_HITS.txt | table with a list of putative tRNAs or rRNAs presents in RFAM database. |
+|  prefix.brumir.other_sequences.txt |  asta file with all long sequences expressed in the sample, they are putative long non-coding RNAs. |
+| prefix.brumir.RFAM_HITS.txt | table with a list of putative tRNAs or rRNAs present in the RFAM database. |
 
  
 
