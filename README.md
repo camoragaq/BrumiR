@@ -5,6 +5,11 @@ alt="BrumiR" width="400" height="264" border="0" /></p>
 
 A de Bruijn graph-based tool for miRNA discovery.
 
+Description
+============
+
+miRNAs are small non-coding RNAs that have become key players at the regulation level. In the last decade, with the increase and accessibility of high-throughput sequencing technologies, different methods have been developed to identify these molecules, but most of them are genome-based methods or are methods based on conservation information. However, when high quality reference genomes are not available, our possibilities are considerably reduced. In this context, we developed BrumiR, a de novo algorithm based on a de Bruijn approach, which is able to identify miRNAs directly and exclusively from sRNA-seq data. We tested BrumiR on different datasets (simulated and real sRNA-seq) from the animal and plant kingdoms, and we compared the results with the state-of-the-art tools in this field. The results of BrumiR exceeded or were comparable to those of the existing methods. Moreover, BrumiR is an ultra-fast algorithm, 20X faster than the state-of-the-art tools, enabling the analysis of a large number of experiments. Futhermore, BrumiR is very easy to use and provides additional tools to explore the results. It also identifies other small RNAs in order to maximize the biological insight. BrumiR presents a new and versatile method that implements novel algorithmic ideas for the study of miRNAs that complements and extends the currently existing approaches. 
+
 ## Running Brumir
 
 ```
