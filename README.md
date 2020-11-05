@@ -56,7 +56,7 @@ make all
 ### Dependencies
 
 #### BCALM (v2.2.2)
-The BCALM binary can be donloaded from: 
+The BCALM binary can be downloaded from: 
 ##### Linux binaries
 ```
 wget https://github.com/GATB/bcalm/releases/download/v2.2.2/bcalm-binaries-v2.2.2-Linux.tar.gz
