@@ -22,20 +22,8 @@ RUN apt-get update \
    wget \
    ca-certificates \
    perl-doc build-essential libomp-8-dev 
-#RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-#RUN bash Miniconda3-latest-Linux-x86_64.sh -b -p /miniconda
-RUN make all
-#ENV PATH /miniconda/bin:$PATH
-#polishing tools
-#COPY environment-quality-assembly.yml /
-#RUN conda env create -n quality-assembly -f /environment-quality-assembly.yml && conda clean -a
-#ENV PATH /miniconda/envs/quality-assembly/bin:$PATH
-#RUN conda create --name HapSolo python=2.7
-#RUN conda install -c anaconda pandas
-#RUN conda activate HapSolo
-#RUN conda install -c anaconda pandas
-#RUN apt-get install -y git
-#RUN git clone https://github.com/esolares/HapSolo.git
-#RUN mv HapSolo /opt
-
-
+RUN apt-get install -y git
+RUN cd /opt && git clone https://github.com/camoragaq/BrumiR.git
+RUN cd /opt/BrumiR && mkdir bin && make all 
+ENV PATH /opt/BrumiR/bin:$PATH
+ENV BRUMIR /opt/BrumiR
