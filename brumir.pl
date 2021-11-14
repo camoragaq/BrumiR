@@ -17,7 +17,9 @@ use UGraph;
 sub usage {
 	print "$0 usage : -a <fastq-reads> -p <Prefix>\n";
 	print "\nAdvanced options:\n";
+	print "\t-k kmer size [def:18]\n";
 	print "\t-T Tip coverage [def:5]\n";
+	print "\t-A Min Abundance BCALM [def:5]\n";
 	print "\t-R factor to split unipaths by coverage [def:3]\n";
 	print "\t-d Min coverage to report candidates [def:20]\n";
 	print "\t-b RFAM 16-mer database [def:rfam-mer.database.txt]\n";
@@ -28,9 +30,13 @@ sub usage {
 #bcalm -in reads.fastq.gz -kmer-size 18 -abundance-min 5
 
 my %opts = ();
-getopts( "a:b:d:p:T:R:", \%opts );
+getopts( "a:b:k:d:p:T:R:A:", \%opts );
 if ( !defined $opts{a} or !defined $opts{p}) {
 	usage;
+}
+
+if(!defined $opts{k}){
+        $opts{k}=14;
 }
 
 if(!defined $opts{T}){
@@ -46,6 +52,10 @@ if(defined $opts{d}){
 	$min_km=$opts{d};
 }
 
+my $bcalm_abundance=5;
+if(defined $opts{A}){
+   $bcalm_abundance = $opts{A};	
+}
 my $rfam_mers=$Bin."/db/rfam-mer.database.txt";
 if(defined $opts{b}){
 	$rfam_mers=$opts{b};
@@ -68,16 +78,16 @@ if(-x $bcalm == 1){
         exit 1; 
 }
 #we run bcalm
-my $cmd="$bcalm -in $opts{a} -kmer-size 18 -out $opts{p}.k18 2>$opts{p}.bcalm.err > $opts{p}.bcalm.log";
+my $cmd="$bcalm -abundance-min $bcalm_abundance -in $opts{a} -kmer-size $opts{k} -out $opts{p} 2>$opts{p}.bcalm.err > $opts{p}.bcalm.log";
 run_cmd($cmd);
 # we catch if there is an error runing bcalm
-if(!-s "$opts{p}.k18.unitigs.fa"){
-  print STDERR "$opts{p}.k18.unitigs.fa file was not create\n";
+if(!-s "$opts{p}.unitigs.fa"){
+  print STDERR "$opts{p}.unitigs.fa file was not create\n";
   exit 1;	
 }
 
 #start the brumir algorithm
-my $ugraph=new UGraph("$opts{p}.k18.unitigs.fa") or die "cannot create the Graph from the BCALM output\n";
+my $ugraph=new UGraph("$opts{p}.unitigs.fa") or die "cannot create the Graph from the BCALM output\n";
 #remove the tips from the Graph i.e sequencing errors, by default we perform 3 iterations
 print "####### REMOVE TIP 1 #########\n";
 $ugraph->remove_tips(24,$opts{T});
@@ -100,7 +110,7 @@ print "####### DELETE BY TOPOLOGY #########\n";
 $ugraph->delete_by_topology($opts{p});
 #recover and build the new unipaths after applying the previous steps.
 print "####### ASSEMBLE UNIPATHS #########\n";
-$ugraph->assemble_unipaths(18,$opts{p});
+$ugraph->assemble_unipaths($opts{k},$opts{p});
 #we compute the overlap among the candidates exact match of K-2 bases
 print "####### EXACT OVERLAP #########\n";
 $ugraph->compute_overlap_candidates_exact(16,$opts{p});#ideally k-2 bases

@@ -419,7 +419,7 @@ sub assemble_unipaths{
        if(scalar(keys %{$degree})==1){
 	#my $uni=$self->{unitigs};
 
-        if( $uni->{KM} >=50 and $uni->{LN} <=25 ){
+        if( $uni->{KM} >=50 and $uni->{LN} <=25  and $uni->{LN} >=18){
         	my $tmp=();
         	$tmp->{id}=$uni->{accession};
         	$tmp->{seq}=$uni->{sequence};
