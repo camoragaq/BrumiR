@@ -24,7 +24,7 @@ RUN apt-get update \
    perl-doc build-essential libomp-8-dev 
 #RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 #RUN bash Miniconda3-latest-Linux-x86_64.sh -b -p /miniconda
-RUN make
+RUN make all
 #ENV PATH /miniconda/bin:$PATH
 #polishing tools
 #COPY environment-quality-assembly.yml /
