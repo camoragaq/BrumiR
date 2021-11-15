@@ -52,7 +52,6 @@ git clone https://github.com/camoragaq/BrumiR.git brumir
 cd brumir
 make all
 ```
-
 ### Dependencies
 
 #### BCALM (v2.2.2)
@@ -79,3 +78,31 @@ make install
 ```
 
 The RNAfold binary should be copied to BrumiR-dir/bin
+
+
+### Containers
+To facilitate the execution of BrumiR, we provide docker/singularity containers.
+BrumiR images are hosted on [Dockerhub](https://hub.docker.com/repository/docker/camoragaq/brumir) and can be downloaded with the command:
+
+```
+docker pull camoragaq/brumir:v0.2
+```
+
+Alternatively, using singularity:
+
+```
+export TMPDIR=/tmp
+singularity pull docker://camoragaq/brumir:v0.2
+```
+
+#### Run BrumiR using singularity
+```
+#using singularity
+CONTAINER=/camoragaq/brumir_v0.2.sif
+
+
+#run BrumiR with singularity exec
+singularity exec brumir_v0.2.sif perl brumir.pl --help
+
+
+
