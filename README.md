@@ -38,12 +38,38 @@ the file *.passfilter.txt contains the miRNAs that have a valid precursor sequen
 ## Convert BrumiR output to GFA (Bandage)
 ```python aux_scripts/convertToGFA.py h.test.unipath.bcalm.fa h.test.unipath.bcalm.gfa 18```
 
-
-# Getting the latest source code
+## Getting the latest source code
 ## Instructions
 It is recommended to use/download the latest binary release (Linux or Mac) from : https://github.com/camoragaq/BrumiR/releases
 
-## Building BrumiR from souce
+
+### Containers
+To facilitate the execution of BrumiR, we provide docker/singularity containers.
+BrumiR images are hosted on [Dockerhub](https://hub.docker.com/repository/docker/camoragaq/brumir) and can be downloaded with the command:
+
+```
+docker pull camoragaq/brumir:v2.0
+```
+
+Alternatively, using singularity:
+
+```
+export TMPDIR=/tmp
+singularity pull docker://camoragaq/brumir:v2.0
+```
+
+#### Run BrumiR using singularity
+```
+#using singularity
+CONTAINER=/camoragaq/brumir_v2.0.sif
+
+
+#run BrumiR with singularity exec
+singularity exec brumir_v2.0.sif perl brumir.pl --help
+
+
+
+## Building BrumiR from source
 
 To compile BrumiR run the following command:
 ```bash
@@ -78,31 +104,5 @@ make install
 ```
 
 The RNAfold binary should be copied to BrumiR-dir/bin
-
-
-### Containers
-To facilitate the execution of BrumiR, we provide docker/singularity containers.
-BrumiR images are hosted on [Dockerhub](https://hub.docker.com/repository/docker/camoragaq/brumir) and can be downloaded with the command:
-
-```
-docker pull camoragaq/brumir:v0.2
-```
-
-Alternatively, using singularity:
-
-```
-export TMPDIR=/tmp
-singularity pull docker://camoragaq/brumir:v0.2
-```
-
-#### Run BrumiR using singularity
-```
-#using singularity
-CONTAINER=/camoragaq/brumir_v0.2.sif
-
-
-#run BrumiR with singularity exec
-singularity exec brumir_v0.2.sif perl brumir.pl --help
-
 
 
