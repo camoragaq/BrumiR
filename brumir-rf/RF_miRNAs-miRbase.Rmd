@@ -1,0 +1,202 @@
+---
+title: "RF miRNAs MiRbase"
+author: "Carol Moraga"
+date: "6/9/2022"
+output: rmarkdown::github_document
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+## Load libraries
+
+```{r loadlibs}
+#install.packages("randomForest")
+#install.packages("caret")
+#install.packages("e1071")
+#install.packages("caTools")
+library(randomForest)
+library(caret)
+library(e1071)
+library(caTools)
+```
+
+## Prepare training data
+
+We use the data from miRbase database (plants entries 10414 mature sequences) to train 15-mers vs random 15-mers along with 26 features.
+Top performance features were selected by a mimimum GINI index of 100, which let us with a total 
+of 19 features to discriminate miRNAs from random 15-mer sequences.
+
+```{r ptrain, echo=T}
+d=read.table("MirBase.plants.rf.training.data",h=T)
+d_mi=d[d$type=="miRNA",]
+d_mirand=d[d$type!="miRNA",]
+#cmodel=c("gc","gcs","cpg","cwf","ce",
+#        "cm1","cm2","cm3","cm4","cm5",
+#        "cm6","ct1","ct2","ct3","ct4",
+#        "ct5","ct6","cl1","cl2","cl3",
+#        "cl4","cl5", "cl6", "mer6", "mer7", "mer8")
+
+#Gini > 100
+# a > 100
+#      Overall
+# gc      TRUE
+# gcs     TRUE
+# cpg     TRUE
+# cwf     TRUE
+# ce      TRUE
+# cm1     TRUE
+# cm2     TRUE
+# cm3     TRUE
+# cm4    FALSE
+# cm5    FALSE
+# cm6    FALSE
+# ct1    FALSE
+# ct2    FALSE
+# ct3     TRUE
+# ct4     TRUE
+# ct5     TRUE
+# ct6     TRUE
+# cl1    FALSE
+# cl2    FALSE
+# cl3     TRUE
+# cl4     TRUE
+# cl5     TRUE
+# cl6     TRUE
+# mer6    TRUE
+# mer7    TRUE
+# mer8    TRUE
+
+cmodel=c("gc","gcs","cpg","cwf","ce",
+        "cm1","cm2","cm3","ct3","ct4",
+        "ct5","ct6","cl3","cl4","cl5", 
+        "cl6", "mer6", "mer7", "mer8")
+
+d_mi=d_mi[,cmodel]
+d_mi$miRNA=1
+d_mirand=d_mirand[,cmodel]
+d_mirand$miRNA=0
+#we convert to factor
+d_mi$miRNA=as.factor(d_mi$miRNA)
+d_mirand$miRNA=as.factor(d_mirand$miRNA)
+```
+
+We split the data intro training and test
+```{r splitdata}
+#we split the data into trainin and test
+d_mirand=d_mirand[sample(nrow(d_mirand), dim(d_mi)*1),]
+dim(d_mirand)
+dim(d_mi)
+mi_data=rbind(d_mi,d_mirand)
+head(mi_data)
+sapply(mi_data, class)
+df <- mi_data
+```
+
+
+We split the data into 75% for training and 25% for evaluation
+
+```{r splitdata2}
+#we split the data for testing and evaluation
+sample = sample.split(df$miRNA, SplitRatio = 0.75)
+train = subset(df, sample == TRUE) # 75% training
+test  = subset(df, sample == FALSE) # 25% for evaluation
+# fitting datasset to avoid overfitting.
+dim(train)
+dim(test)
+```
+
+
+## Random Forest
+
+### Training
+
+```{r rftrain}
+#test with regular training 
+rf <- randomForest(
+  miRNA ~ .,
+  #importance=T,
+  data=train,
+  keep.forest = TRUE
+)
+
+```
+### Evaluation
+
+```{r rfeval}
+#we make the predictions
+pred = predict(rf, newdata=test)
+#we evaluate the prediction
+confusionMatrix(pred, test$miRNA)
+varImp(rf)
+varImpPlot(rf,main="Importance of features (RF miRNA miRbase)")
+```
+
+### Training with all data
+
+```{r alldata}
+#test with regular training 
+rff <- randomForest(
+ miRNA ~ .,
+ #importance=T,
+data=mi_data,
+keep.forest = TRUE
+)
+
+cat('Model build complete. Saving model...\n')
+saveRDS(rff, file="miRbase_plants_rf_model_v01.rds")
+cat('Model data saved.\n')
+save.image(file=paste0("miRbase_plants_rf_model_v01",".RData"))
+  
+```
+
+<!-- ## Classification of Brumir results -->
+
+<!-- ```{r loadbrumirdata} -->
+<!-- br=read.table("Git/BrumiR/random_forest/test2.br",h=T) -->
+<!-- br$miRNA=0 -->
+<!-- #we convert to factor -->
+<!-- br$miRNA=as.factor(br$miRNA) -->
+<!-- sample.features<-subset(br, select = names(rff$forest$xlevels)) -->
+<!-- any.missing.features <- which(!names(rff$forest$xlevels) %in% colnames(sample.features)); -->
+<!-- #we predict using the model -->
+<!-- predicted.class <- predict(rff, sample.features)  -->
+<!-- predicted.prob <- predict(rff, sample.features, type="prob") -->
+<!-- predictions <- data.frame( -->
+<!--   br, -->
+<!--   Predicted.Class = predicted.class, -->
+<!--   Predicted.prob = predicted.prob -->
+<!-- )   -->
+
+<!-- write.table( -->
+<!--   x = predictions, -->
+<!--   file = paste0("brumir", "_predictions_unfiltered2.txt"), -->
+<!--   sep = '\t', -->
+<!--   row.names = TRUE, -->
+<!--   quote = FALSE -->
+<!-- ); -->
+
+<!-- a=predictions[predictions$Predicted.prob.1 > 0.8,] -->
+
+<!-- #write the filtered predictions -->
+<!-- write.table( -->
+<!--   x = a, -->
+<!--   file = paste0("brumir", "_predictions_filtered2.txt"), -->
+<!--   sep = '\t', -->
+<!--   row.names = TRUE, -->
+<!--   quote = FALSE -->
+<!-- ); -->
+<!-- ``` -->
+
+
+## R session info
+
+print the session information.
+
+```{r session-info, include=TRUE, echo=TRUE, results='markup'}
+devtools::session_info()
+```
+

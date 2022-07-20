@@ -1,5 +1,5 @@
 ---
-title: "RF miRNAs"
+title: "RF miRNAs MirGenDB"
 author: "Carol Moraga"
 date: "6/9/2022"
 output: rmarkdown::github_document
@@ -30,7 +30,7 @@ We use the data from MirGenDB database to train 15-mers vs random 15-mers along 
 Top performance features were selected by a mimimum GINI index of 100, which let us with a total 
 of 19 features to discriminate miRNAs from random 15-mer sequences.
 
-```{r ptrain, echo=FALSE}
+```{r ptrain, echo=TRUE}
 d=read.table("MirGenDB.rf.training.data",h=T)
 d_mi=d[d$type=="miRNA",]
 d_mirand=d[d$type!="miRNA",]
@@ -132,7 +132,7 @@ pred = predict(rf, newdata=test)
 #we evaluate the prediction
 confusionMatrix(pred, test$miRNA)
 varImp(rf)
-varImpPlot(rf,main="Importance of features (RF miRNA)")
+varImpPlot(rf,main="Importance of features (RF miRNA MirGenDB)")
 ```
 
 ### Training with all data

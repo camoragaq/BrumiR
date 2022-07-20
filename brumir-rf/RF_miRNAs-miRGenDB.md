@@ -1,4 +1,4 @@
-RF miRNAs
+RF miRNAs MirGenDB
 ================
 Carol Moraga
 6/9/2022
@@ -43,6 +43,60 @@ We use the data from MirGenDB database to train 15-mers vs random
 15-mers along with 26 features. Top performance features were selected
 by a mimimum GINI index of 100, which let us with a total of 19 features
 to discriminate miRNAs from random 15-mer sequences.
+
+``` r
+d=read.table("MirGenDB.rf.training.data",h=T)
+d_mi=d[d$type=="miRNA",]
+d_mirand=d[d$type!="miRNA",]
+#cmodel=c("gc","gcs","cpg","cwf","ce",
+#        "cm1","cm2","cm3","cm4","cm5",
+#        "cm6","ct1","ct2","ct3","ct4",
+#        "ct5","ct6","cl1","cl2","cl3",
+#        "cl4","cl5", "cl6", "mer6", "mer7", "mer8")
+
+#Gini > 100
+# a > 100
+#      Overall
+# gc      TRUE
+# gcs     TRUE
+# cpg     TRUE
+# cwf     TRUE
+# ce      TRUE
+# cm1     TRUE
+# cm2     TRUE
+# cm3     TRUE
+# cm4    FALSE
+# cm5    FALSE
+# cm6    FALSE
+# ct1    FALSE
+# ct2    FALSE
+# ct3     TRUE
+# ct4     TRUE
+# ct5     TRUE
+# ct6     TRUE
+# cl1    FALSE
+# cl2    FALSE
+# cl3     TRUE
+# cl4     TRUE
+# cl5     TRUE
+# cl6     TRUE
+# mer6    TRUE
+# mer7    TRUE
+# mer8    TRUE
+
+cmodel=c("gc","gcs","cpg","cwf","ce",
+        "cm1","cm2","cm3","ct3","ct4",
+        "ct5","ct6","cl3","cl4","cl5", 
+        "cl6", "mer6", "mer7", "mer8")
+
+d_mi=d_mi[,cmodel]
+d_mi$miRNA=1
+d_mirand=d_mirand[,cmodel]
+d_mirand$miRNA=0
+#we convert to factor
+d_mi$miRNA=as.factor(d_mi$miRNA)
+d_mirand$miRNA=as.factor(d_mirand$miRNA)
+```
 
 We split the data intro training and test
 
@@ -148,28 +202,28 @@ confusionMatrix(pred, test$miRNA)
     ## 
     ##           Reference
     ## Prediction    1    0
-    ##          1 8325 1200
-    ##          0  567 7692
-    ##                                          
-    ##                Accuracy : 0.9006         
-    ##                  95% CI : (0.8962, 0.905)
-    ##     No Information Rate : 0.5            
-    ##     P-Value [Acc > NIR] : < 2.2e-16      
-    ##                                          
-    ##                   Kappa : 0.8013         
-    ##                                          
-    ##  Mcnemar's Test P-Value : < 2.2e-16      
-    ##                                          
-    ##             Sensitivity : 0.9362         
-    ##             Specificity : 0.8650         
-    ##          Pos Pred Value : 0.8740         
-    ##          Neg Pred Value : 0.9313         
-    ##              Prevalence : 0.5000         
-    ##          Detection Rate : 0.4681         
-    ##    Detection Prevalence : 0.5356         
-    ##       Balanced Accuracy : 0.9006         
-    ##                                          
-    ##        'Positive' Class : 1              
+    ##          1 8342 1251
+    ##          0  550 7641
+    ##                                           
+    ##                Accuracy : 0.8987          
+    ##                  95% CI : (0.8942, 0.9031)
+    ##     No Information Rate : 0.5             
+    ##     P-Value [Acc > NIR] : < 2.2e-16       
+    ##                                           
+    ##                   Kappa : 0.7975          
+    ##                                           
+    ##  Mcnemar's Test P-Value : < 2.2e-16       
+    ##                                           
+    ##             Sensitivity : 0.9381          
+    ##             Specificity : 0.8593          
+    ##          Pos Pred Value : 0.8696          
+    ##          Neg Pred Value : 0.9329          
+    ##              Prevalence : 0.5000          
+    ##          Detection Rate : 0.4691          
+    ##    Detection Prevalence : 0.5394          
+    ##       Balanced Accuracy : 0.8987          
+    ##                                           
+    ##        'Positive' Class : 1               
     ## 
 
 ``` r
@@ -177,28 +231,28 @@ varImp(rf)
 ```
 
     ##         Overall
-    ## gc     491.2699
-    ## gcs    459.8419
-    ## cpg    682.5782
-    ## cwf    402.9425
-    ## ce     402.2551
-    ## cm1    403.9711
-    ## cm2    471.0474
-    ## cm3    182.3391
-    ## ct3    228.3276
-    ## ct4    244.1112
-    ## ct5    245.3008
-    ## ct6    244.5093
-    ## cl3    136.8476
-    ## cl4    147.2054
-    ## cl5    153.2094
-    ## cl6    153.3901
-    ## mer6  2614.2400
-    ## mer7  4645.9126
-    ## mer8 13966.0198
+    ## gc     478.6378
+    ## gcs    456.0149
+    ## cpg    780.3036
+    ## cwf    403.5648
+    ## ce     399.0713
+    ## cm1    397.8033
+    ## cm2    474.4141
+    ## cm3    185.9199
+    ## ct3    227.5188
+    ## ct4    246.2067
+    ## ct5    243.5388
+    ## ct6    245.5288
+    ## cl3    137.9474
+    ## cl4    145.6713
+    ## cl5    152.5678
+    ## cl6    153.9868
+    ## mer6  2631.0933
+    ## mer7  4628.9708
+    ## mer8 13869.4331
 
 ``` r
-varImpPlot(rf,main="Importance of features (RF miRNA)")
+varImpPlot(rf,main="Importance of features (RF miRNA MirGenDB)")
 ```
 
 ![](RF_miRNAs-miRGenDB_files/figure-gfm/rfeval-1.png)<!-- -->
@@ -282,7 +336,7 @@ devtools::session_info()
     ##  collate  en_US.UTF-8
     ##  ctype    en_US.UTF-8
     ##  tz       America/Santiago
-    ##  date     2022-07-10
+    ##  date     2022-07-11
     ##  pandoc   2.14.0.3 @ /Applications/RStudio.app/Contents/MacOS/pandoc/ (via rmarkdown)
     ## 
     ## ─ Packages ───────────────────────────────────────────────────────────────────
