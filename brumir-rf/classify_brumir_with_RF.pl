@@ -1,7 +1,7 @@
 use Data::Dumper;
 use SeqComplex;
 use Getopt::Std;
-
+use FindBin qw($Bin);
 
 sub get_Xmer_com{
 	my ($x,$hash)=@_;
@@ -46,6 +46,8 @@ sub usage {
 	exit 1;
 }
 
+
+#print $Bin."\n";
 
 my %opts = ();
 getopts("i:d:m:s:h:",\%opts);
@@ -131,7 +133,7 @@ foreach my $s (keys %{$hashbr}){
 close(M);
 
 # we do classify the brumir candidades 
-my $cmd="Rscript Classify_miRNAs_RF.R -i $opts{s}.br.matrix.txt -m $opts{m} -s $opts{s}";
+my $cmd="Rscript $Bin/Classify_miRNAs_RF.R -i $opts{s}.br.matrix.txt -m $opts{m} -s $opts{s}";
 system($cmd) == 0
     or die "system $cmd failed: $?";
 # we filter the fasta file with candidates classified as miRNAs
