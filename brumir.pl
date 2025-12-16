@@ -17,7 +17,7 @@ use UGraph;
 sub usage {
 	print "$0 usage : -a <fastq-reads> -p <Prefix>\n";
 	print "\nAdvanced options:\n";
-	print "\t-k kmer size [def:18]\n";
+	print "\t-k kmer size [def:14]\n";
 	print "\t-T Tip coverage [def:5]\n";
 	print "\t-A Min Abundance BCALM [def:5]\n";
 	print "\t-R factor to split unipaths by coverage [def:3]\n";
